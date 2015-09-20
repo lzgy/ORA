@@ -30,21 +30,24 @@ volatile uint8_t ciklus=0;
 volatile uint8_t masodperc=0;
 volatile uint8_t kijelzes=0;
 volatile uint8_t prell=ANTIPRELL;
+//volatile uint8_t prell_2=ANTIPRELL;
+
 uint8_t t_sec=0;
 uint8_t perc=0;
 uint8_t t_perc=0;
 uint8_t kijelzes_Seged=0;
+uint8_t seged=1;
 
 void init(void)
 {
 	cli();   //globális megszakítás kezelés kikapcsolása
 	DDRB =  0xFF;
-	DDRD =  0x78; // 0b1111000; utolsó három pd6,pd5,pd4,pd3 kimenet | pd2,pd1, pd0 bemenet
+	DDRD =  0x79; // 0b1111000; utolsó három pd6,pd5,pd4,pd3 kimenet | pd2,pd1, pd0 bemenet
 	PORTD |=  (1<<PD2);	//felhúzó ellenállás bekapcsolása hogy GND-re lehúzva lehessen használni
 	PORTD |=  (1<<PD1);//felhúzó ellenállás bekapcsolása hogy GND-re lehúzva lehessen használni
-	PORTD |=  (1<<PD0);//felhúzó ellenállás bekapcsolása hogy GND-re lehúzva lehessen használni
+	//PORTD |=  (1<<PD0);//felhúzó ellenállás bekapcsolása hogy GND-re lehúzva lehessen használni
 	
-	TCCR0B |=(1<<CS02);  //256-elõosztó elvileg egy ciklus 1 464,84375
+	TCCR0B |=(1<<CS02);  //256-elõosztó elvileg egy ciklus 1 464,84375 OSZTVA 255-tel
 	TIMSK |= (1<<TOIE0);
 	sei();   //globális megszakítás kezelés bekapcsolása
 
@@ -55,7 +58,8 @@ ISR(TIMER0_OVF_vect)
 	
 	ciklus++;
 	if (ciklus == 92) {ciklus=0; masodperc++;}
-	if (prell < ANTIPRELL) prell++;  //prellezésmentesítés 30
+	if (prell < ANTIPRELL) prell++;  //prellezésmentesítés nyomógomb digitnövelõ
+	//if (prell_2 < ANTIPRELL) prell_2++;  //prellezésmentesítés nyomógomb digitváltü
 	
 	
 }
@@ -124,16 +128,31 @@ int main(void)
 			kijelzes_Seged=0;
 	   }
 	   
-	   if (PIND2==0) 
+	   
+	   if (!(PIND & _BV(PD2))) 
 	   {	
 		   if(prell == ANTIPRELL)
 		   {
 			   t_perc++;
+			   if(t_perc==6)
+			   {
+				   t_perc=0;
+			   }
 			   prell=0;
 		   }
 	  
 	   }
 	   else { prell=0; }
+		   
+	/*   if (!(PIND & _BV(PD1))) 
+	   {	
+		   if(prell_2 == ANTIPRELL)
+		   {
+			   
+		   }
+	  
+	   }
+	   else { prell_2=0; }*/
 	   
 		//TODO:: Please write your application code 
     }
