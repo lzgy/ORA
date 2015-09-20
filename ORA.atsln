@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Atmel Studio Solution File, Format Version 11.00
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "ORA", "ORA\ORA.cproj", "{B64DF42D-A230-4C56-8DC9-9668E608B00D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|AVR = Debug|AVR
+		Release|AVR = Release|AVR
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B64DF42D-A230-4C56-8DC9-9668E608B00D}.Debug|AVR.ActiveCfg = Debug|AVR
+		{B64DF42D-A230-4C56-8DC9-9668E608B00D}.Debug|AVR.Build.0 = Debug|AVR
+		{B64DF42D-A230-4C56-8DC9-9668E608B00D}.Release|AVR.ActiveCfg = Release|AVR
+		{B64DF42D-A230-4C56-8DC9-9668E608B00D}.Release|AVR.Build.0 = Release|AVR
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
