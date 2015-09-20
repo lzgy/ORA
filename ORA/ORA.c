@@ -6,6 +6,8 @@
  */ 
 
 #define F_CPU 6000000UL
+#define ANTIPRELL 30
+
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
@@ -27,6 +29,7 @@ const uint8_t DIGIT[4] = {0b01000000, 0b00100000, 0b00010000, 0b00001000 };
 volatile uint8_t ciklus=0;
 volatile uint8_t masodperc=0;
 volatile uint8_t kijelzes=0;
+volatile uint8_t prell=ANTIPRELL;
 uint8_t t_sec=0;
 uint8_t perc=0;
 uint8_t t_perc=0;
@@ -36,7 +39,11 @@ void init(void)
 {
 	cli();   //globális megszakítás kezelés kikapcsolása
 	DDRB =  0xFF;
-	DDRD =  0xFF;
+	DDRD =  0x78; // 0b1111000; utolsó három pd6,pd5,pd4,pd3 kimenet | pd2,pd1, pd0 bemenet
+	PORTD |=  (1<<PD2);	//felhúzó ellenállás bekapcsolása hogy GND-re lehúzva lehessen használni
+	PORTD |=  (1<<PD1);//felhúzó ellenállás bekapcsolása hogy GND-re lehúzva lehessen használni
+	PORTD |=  (1<<PD0);//felhúzó ellenállás bekapcsolása hogy GND-re lehúzva lehessen használni
+	
 	TCCR0B |=(1<<CS02);  //256-elõosztó elvileg egy ciklus 1 464,84375
 	TIMSK |= (1<<TOIE0);
 	sei();   //globális megszakítás kezelés bekapcsolása
@@ -45,8 +52,10 @@ void init(void)
 
 ISR(TIMER0_OVF_vect)
 {
+	
 	ciklus++;
 	if (ciklus == 92) {ciklus=0; masodperc++;}
+	if (prell < ANTIPRELL) prell++;  //prellezésmentesítés 30
 	
 	
 }
@@ -114,6 +123,18 @@ int main(void)
 			if (kijelzes == 4) kijelzes=0;
 			kijelzes_Seged=0;
 	   }
+	   
+	   if (PIND2==0) 
+	   {	
+		   if(prell == ANTIPRELL)
+		   {
+			   t_perc++;
+			   prell=0;
+		   }
+	  
+	   }
+	   else { prell=0; }
+	   
 		//TODO:: Please write your application code 
     }
 }
